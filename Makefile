@@ -80,7 +80,7 @@ test: .docker/tests
 		--link $(SERVE_CONTAINER) \
 		--tty $(TESTS_IMAGE)
 
-Gemfile.lock: .docker/bundler
+Gemfile.lock: .docker/bundler Gemfile
 	docker run \
 		--volume $(ROOT):/site \
 		--workdir /site \
