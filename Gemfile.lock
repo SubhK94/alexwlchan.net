@@ -42,6 +42,8 @@ GEM
       pathutil (~> 0.9)
       rouge (~> 1.7)
       safe_yaml (~> 1.0)
+    jekyll-compose (0.5.0)
+      jekyll (>= 3.0.0)
     jekyll-paginate-v2 (1.9.0)
       jekyll (~> 3.0)
     jekyll-sass-converter (1.5.0)
@@ -113,6 +115,7 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll (= 3.5.2)
+  jekyll-compose (~> 0.5)
   jekyll-paginate-v2 (~> 1.8)
   nokogiri (~> 1.8)
   octopress-minify-html (~> 1.3)
