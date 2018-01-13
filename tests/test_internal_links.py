@@ -10,13 +10,13 @@ _responses = []
 
 
 @pytest.fixture
-def responses(src, baseurl):
+def responses(src, nginx_baseurl):
     """
     Uses http-crawler to index every internal page, and return a list
     of associated responses.
     """
     if not _responses:
-        for rsp in crawl(baseurl, follow_external_links=False):
+        for rsp in crawl(nginx_baseurl, follow_external_links=False):
             _responses.append(rsp)
 
         # This is an attempt to pick up pages that I know exist, but which
