@@ -4,6 +4,11 @@ services:
     volumes:
     - ~/sites/alexwlchan.net:/usr/share/nginx/html
     - ./alexwlchan.net.nginx.conf:/etc/nginx/nginx.conf
+  staging:
+    image: nginx:alpine
+    volumes:
+    - ~/sites/staging.alexwlchan.net:/usr/share/nginx/html
+    - ./alexwlchan.net.nginx.conf:/etc/nginx/nginx.conf
   bijou:
     image: nginx:alpine
     volumes:
@@ -12,8 +17,15 @@ services:
     image: "nginx:alpine"
     volumes:
     - ~/sites/finduntaggedtumblrposts.com:/usr/share/nginx/html
-  pinteresting:
-    image: pinteresting
+  loris:
+    image: loris
+    volumes:
+    - ~/scrapbook:/mnt/loris
+  scrapbook:
+    image: pinboard
+    command: python3 /app/examples/images/viewer.py --app_password=$PIN_APP_PASSWORD --es_host=tiny_elastic:9200 --loris_host=loris.alexwlchan.net
+    volumes:
+    - ~/scrapbook:/tmp/images
   pinboard:
     image: pinboard
     command: python3 /app/examples/pinboard/viewer.py --pin_username=$PIN_USERNAME --pin_password=$PIN_PASSWORD --app_password=$PIN_APP_PASSWORD --es_host=tiny_elastic:9200
@@ -25,6 +37,7 @@ services:
     - 80:80
     - 443:443
     volumes:
+    - ./htpasswd:/etc/nginx/.htpasswd
     - ./nginx.conf:/etc/nginx/nginx.conf
     - ~/.certbot:/etc/certbot
     - ~/letsencrypt:/etc/letsencrypt
