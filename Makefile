@@ -4,7 +4,8 @@ SERVE_CONTAINER = server
 
 RSYNC_HOST = 139.162.244.147
 RSYNC_USER = alexwlchan
-RSYNC_DIR = /home/alexwlchan/sites/alexwlchan.net
+PROD_RSYNC_DIR = /home/alexwlchan/sites/alexwlchan.net
+STAGING_RSYNC_DIR = /home/alexwlchan/sites/staging.alexwlchan.net
 
 ROOT = $(shell git rev-parse --show-toplevel)
 SRC = $(ROOT)/src
@@ -69,7 +70,7 @@ publish-drafts: .docker/build
 publish: publish-drafts build
 
 deploy: publish
-	docker run --rm --tty \
+	RSYNC_DIR=$(PROD_RSYNC_DIR) docker run --rm --tty \
 		--volume ~/.ssh/id_rsa:/root/.ssh/id_rsa \
 		--volume $(DST):/data \
 		instrumentisto/rsync-ssh \
