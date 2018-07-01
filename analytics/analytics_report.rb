@@ -1,6 +1,7 @@
 require "optparse"
 require "ostruct"
 
+require "./docker_logs.rb"
 
 # Parse command-line options
 options = OpenStruct.new({
@@ -12,4 +13,9 @@ OptionParser.new do |opt|
   opt.on("--limit LIMIT", "Max number of records to show") { |o| options[:limit] = o.to_i }
 end.parse!
 
-puts options
+
+logs = get_docker_logs(container_name = CONTAINER_NAME, days = options.days)
+
+logs.each { |line|
+  puts parse_log_line(line)
+}
