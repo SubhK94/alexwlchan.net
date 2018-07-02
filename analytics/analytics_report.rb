@@ -19,6 +19,10 @@ end.parse!
 
 logs = get_docker_logs(container_name = CONTAINER_NAME, days = options.days)
 
+tracking_lines = []
+not_found_lines = []
+error_lines = []
+
 logs.each { |line|
   parsed_log = parse_log_line(line)
 
@@ -41,5 +45,15 @@ logs.each { |line|
     next
   end
 
-  puts parsed_log
+  if parsed_log["status"] == 200
+    tracking_lines.push(parsed_log)
+  elsif parsed_log["status"] == 404
+    not_found_lines.push(parsed_log)
+  elsif parsed_log["status"] == 410
+    next
+  else
+    error_lines.push(parsed_log)
+  end
 }
+
+puts error_lines
