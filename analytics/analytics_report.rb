@@ -1,5 +1,7 @@
+require "cgi"
 require "optparse"
 require "ostruct"
+require "uri"
 
 require "./docker_logs.rb"
 
@@ -17,5 +19,22 @@ end.parse!
 logs = get_docker_logs(container_name = CONTAINER_NAME, days = options.days)
 
 logs.each { |line|
-  puts parse_log_line(line)
+  parsed_log = parse_log_line(line)
+
+  # Only clients with JavaScript and no DNT request this tracking pixel;
+  # requests for anything other than the tracking pixel should be ignored.
+  if !parsed_log["url"].start_with?("/analytics/a.gif")
+    next
+  end
+
+  # Now unpack the contents of the tracking pixel metadata.
+  query = URI.parse(parsed_log["url"]).query
+  parsed_query = CGI.parse(query)
+  parsed_log["query"] = {
+    "title" => parsed_query["t"].first,
+    "referrer" => parsed_query["ref"].first,
+    "url" => parsed_query["url"].first,
+  }
+
+  puts parsed_log
 }

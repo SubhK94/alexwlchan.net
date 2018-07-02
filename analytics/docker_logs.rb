@@ -1,3 +1,6 @@
+require "date"
+
+
 def get_docker_logs(container_name, days)
   # For some reason 'docker logs' doesn't understand '7d' or similar, so
   # convert to a number of minutes first.
@@ -20,5 +23,15 @@ NGINX_LOG_REGEX = %r{
 
 def parse_log_line(line)
   match = NGINX_LOG_REGEX.match(line)
-  Hash[match.names.zip(match.captures)]
+  result = Hash[match.names.zip(match.captures)]
+
+  result["bytes_sent"] = result["bytes_sent"].to_i
+  result["status"] = result["status"].to_i
+  result["datetime"] = DateTime.strptime(result["datetime"], "%d/%b/%Y:%H:%M:%S %z")
+
+  if result["forwarded_host"] == "-"
+    result["forwarded_host"] = nil
+  end
+
+  result
 end
