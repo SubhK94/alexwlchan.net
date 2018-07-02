@@ -4,6 +4,7 @@ require "ostruct"
 require "uri"
 
 require "./docker_logs.rb"
+require "./ignores.rb"
 
 # Parse command-line options
 options = OpenStruct.new({
@@ -35,6 +36,10 @@ logs.each { |line|
     "referrer" => parsed_query["ref"].first,
     "url" => parsed_query["url"].first,
   }
+
+  if should_be_ignored(parsed_log)
+    next
+  end
 
   puts parsed_log
 }
