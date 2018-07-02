@@ -45,7 +45,7 @@ logs.each { |line|
     next
   end
 
-  if parsed_log["status"] == 200
+  if 200 <= parsed_log["status"] && parsed_log["status"] < 400
     tracking_lines.push(parsed_log)
   elsif parsed_log["status"] == 404
     not_found_lines.push(parsed_log)
